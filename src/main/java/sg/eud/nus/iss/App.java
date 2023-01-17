@@ -1,7 +1,11 @@
 package sg.eud.nus.iss;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,16 +49,29 @@ public final class App {
             DataInputStream dis= new DataInputStream(bis);
             String msgReceived="";
 
+            try(OutputStream os= s.getOutputStream()){
+                BufferedOutputStream bos= new BufferedOutputStream(os);
+                DataOutputStream dos= new DataOutputStream(bos);
+                while (!msgReceived.equals("colse")){
+                    msgReceived=dis.readUTF();
 
+                    if(msgReceived.equalsIgnoreCase("get-cookie")){
+                        String cookieValue=cookie.returnCookie();
+                        System.out.println(cookieValue);
 
-            while (!msgReceived.equals("colse")){
-                msgReceived=dis.readUTF();
-
-                if(msgReceived.equalsIgnoreCase("get-cookie")){
-                    String cookieValue=cookie.returnCookie();
-                    System.out.println(cookieValue);
+                        dos.writeUTF(cookieValue);
+                        dos.flush();
+                    }
                 }
+                dos.close();
+                bos.close();
+                os.close();
+            }catch(EOFException e){
+                e.printStackTrace();
             }
+            bis.close();
+            dis.close();
+            is.close();
         }catch(IOException E){
             s.close();
             ss.close();
