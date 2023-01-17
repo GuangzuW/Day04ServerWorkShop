@@ -52,6 +52,7 @@ public final class App {
 
                 if(msgReceived.equalsIgnoreCase("get-cookie")){
                     String cookieValue=cookie.returnCookie();
+                    System.out.println(cookieValue);
                 }
             }
         }catch(IOException E){
