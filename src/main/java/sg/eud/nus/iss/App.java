@@ -3,7 +3,6 @@ package sg.eud.nus.iss;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
@@ -41,7 +40,7 @@ public final class App {
        cookie.showCookies();
 
 
-       ServerSocket ss= new ServerSocket(7000);
+       ServerSocket ss= new ServerSocket(12345);
        Socket s= ss.accept();
 
        try(InputStream is= s.getInputStream()){
@@ -60,6 +59,13 @@ public final class App {
                         System.out.println(cookieValue);
 
                         dos.writeUTF(cookieValue);
+                        dos.flush();
+                    }
+
+                    if (msgReceived.equalsIgnoreCase("hello")){
+                        String response="hiiiiii";
+
+                        dos.writeUTF(response);
                         dos.flush();
                     }
                 }
